@@ -11,8 +11,23 @@
     </ul>
 
     <div class="col-md-3 text-end">
-      <a href="/users/login" class="btn btn-outline-primary me-2">Login</a>
-      <a href="/users/register" class="btn btn-outline-primary me-2">Sign-up</a>
+      <ul>
+        <% if (locals.isLogged) { %>
+         <a href="/users/profile" class="navbar-item">
+            <div class="header-userprofile">
+              <i class="fa-solid fa-user"></i>
+              <%= locals.userLogged.Name %>
+            </div>             
+          </a>
+        <a href="/users/logout" class="btn btn-outline-primary me-2">Cerrar Sesion</a>
+      </ul>
+          <% } else { %>
+      <ul>
+        <a href="/users/register" class="btn btn-outline-primary me-2">Sign-up</a>
+        <a href="/users/login" class="btn btn-outline-primary me-2">Login</a>
+      </ul>
+          <% } %>
+
     </div>
   </header>
 </div>
