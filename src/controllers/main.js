@@ -1,6 +1,5 @@
 const bcryptjs = require('bcryptjs');
 const db = require('../database/models');
-// const { where } = require('sequelize');
 const { validationResult } = require('express-validator');
 const {Op} = require('sequelize')
 
@@ -39,16 +38,13 @@ const mainController = {
     })
       .then(books => {
         if (books.length === 0) {
-          // No se encontraron libros, renderiza el mensaje de no encontrados
           res.render('noResults');
         } else {
-          // Se encontraron libros, renderiza los resultados
           res.render('search', { books });
         }
       })
       .catch(error => {
         console.log(error);
-        // Manejo del error
       });
   },
   
@@ -71,13 +67,6 @@ const mainController = {
    
     }).catch(error => console.log(error))
 
-    // Implement delete book
-  //   await db.Book.destroy({
-  //     where: {
-  //         id: req.params.id
-  //     }
-  // })
-  //   res.redirect('/');
   },
 
   authors: (req, res) => {
