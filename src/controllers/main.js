@@ -1,11 +1,12 @@
 const bcryptjs = require('bcryptjs');
 const db = require('../database/models');
-const { where } = require('sequelize');
-const { validationResult } = require('express-validator')
+// const { where } = require('sequelize');
+const { validationResult } = require('express-validator');
+const {Op} = require('sequelize')
 
 const mainController = {
   home: (req, res) => {
-    let book = db.Book.findAll({
+    db.Book.findAll({
       include: [{ association: 'authors' }]
     })
       .then((books) => {
@@ -13,49 +14,70 @@ const mainController = {
       })
       .catch((error) => console.log(error));
   },
-  bookDetail: async (req, res) => {
+  bookDetail: (req, res) => {
     // Implement look for details in the database
-    let detailBook = await db.Book.findByPk(req.params.id, {
-      include: [{ association: 'authors'}],
-      raw: true,
-      nest: true
-    })
-    if(detailBook){
-      return res.render('bookDetail',{book:detailBook})
-    }else{
-    res.send('The book was not found.');
-  }},
+    db.Book.findByPk(req.params.id,{
+      include: ['authors']})
+    .then((book) => {
+      res.render('bookDetail',{book});
+    }).catch(error => console.log(error))
+  },
 
   bookSearch: (req, res) => {
     res.render('search', { books: [] });
   },
 
-  bookSearchResult: async (req, res) => {
-    // Implement search by title
-    let query = await db.Book.findOne({
+  bookSearchResult: (req, res) => {
+    const { title } = req.body;
+    console.log(title);
+  
+    db.Book.findAll({
+      include: ['authors'],
       where: {
-        title: req.body.title
-      },
-        include: [{association:'authors'}],
-        raw: true,
-        nest: true          
-      
-    })
-    if(query){
-      return res.render('bookDetail',{book:query})
-    }else{
-      res.send('The book was not found.');
-    }
-  },
-
-  deleteBook: async (req, res) => {
-    // Implement delete book
-    await db.Book.destroy({
-      where: {
-          id: req.params.id
+        title: { [Op.substring]: title }
       }
-  })
-    res.redirect('/');
+    })
+      .then(books => {
+        if (books.length === 0) {
+          // No se encontraron libros, renderiza el mensaje de no encontrados
+          res.render('noResults');
+        } else {
+          // Se encontraron libros, renderiza los resultados
+          res.render('search', { books });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        // Manejo del error
+      });
+  },
+  
+
+  deleteBook: (req, res) => {
+    db.BooksAuthors.destroy({
+      where : {
+        BookId : req.params.id
+      }
+    }).then((response) => {
+      if (response){
+        db.Book.destroy({
+          where : {
+            id: req.params.id
+          },
+          force : true
+          
+        }).then(() => res.redirect('/'))
+      }
+   
+    }).catch(error => console.log(error))
+
+    // Implement delete book
+  //   await db.Book.destroy({
+  //     where: {
+  //         id: req.params.id
+  //     }
+  // })
+  //   res.redirect('/');
   },
 
   authors: (req, res) => {

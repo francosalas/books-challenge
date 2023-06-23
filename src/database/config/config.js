@@ -5,6 +5,11 @@ module.exports = {
     database: 'library',
     host: '127.0.0.1',
     dialect: 'mysql'
+    // username: 'coffeein',
+    // password: 'Mimente01!',
+    // database: 'library_c19',
+    // host: 'db4free.net',
+    // dialect: 'mysql'
   },
   test: {
     username: 'root',
@@ -12,6 +17,11 @@ module.exports = {
     database: 'database_test',
     host: '127.0.0.1',
     dialect: 'mysql'
+    // username: 'coffeein',
+    // password: 'Mimente01!',
+    // database: 'library_c19',
+    // host: 'db4free.net',
+    // dialect: 'mysql'
   },
   production: {
     username: 'root',
@@ -19,5 +29,10 @@ module.exports = {
     database: 'database_production',
     host: '127.0.0.1',
     dialect: 'mysql'
+    // username: 'coffeein',
+    // password: 'Mimente01!',
+    // database: 'library_c19',
+    // host: 'db4free.net',
+    // dialect: 'mysql'
   }
 };
